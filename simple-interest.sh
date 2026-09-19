@@ -1,26 +1,23 @@
 #!/bin/bash
-# This script calculates simple interest given principal, annual rate of interest and time period in years.
-# Do not use this in production. Sample purpose only.
 
-# Author: Upkar Lidder (IBM)
-# Addtional Authors:
-# <your Github username>
+# Simple Interest Calculator
+# Formula: Simple Interest = (Principal * Rate * Time) / 100
 
-# Input:
-# p, principal amount
-# t, time period in years
-# r, annual rate of interest
-
-# Output:
-# simple interest = p*t*r
-
-echo "Enter the principal:"
+echo "Enter the principal amount:"
 read p
-echo "Enter rate of interest per year:"
+
+echo "Enter the rate of interest:"
 read r
-echo "Enter time period in years:"
+
+echo "Enter the time period:"
 read t
 
-s=$(expr $p \* $t \* $r / 100)
-echo "The simple interest is: "
-echo $s
+if command -v bc >/dev/null 2>&1; then
+    si=$(echo "scale=2; ($p * $r * $t) / 100" | bc)
+elif command -v awk >/dev/null 2>&1; then
+    si=$(awk -v p="$p" -v r="$r" -v t="$t" 'BEGIN { printf "%.2f\n", (p * r * t) / 100 }')
+else
+    si=$(expr $p \* $r \* $t / 100)
+fi
+
+echo "Simple Interest: $si"
